@@ -79,7 +79,7 @@ const AnalysisResult: React.FC<AnalysisResultProps> = ({ data }) => {
               <div className="flex items-center justify-between mb-6 border-b border-slate-200/60 pb-4">
                   <div className="flex items-center gap-2">
                       <TrendingUp size={20} className="text-pink-600" />
-                      <h3 className="text-xl font-bold text-slate-900 tracking-tight">Ozon/WB 热搜推荐标签</h3>
+                      <h3 className="text-xl font-bold text-slate-900 tracking-tight">Ozon 热搜推荐标签</h3>
                   </div>
                   {data.market_usps.trending_tags && data.market_usps.trending_tags.length > 0 && (
                       <button 

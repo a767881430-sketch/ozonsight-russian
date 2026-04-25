@@ -2,7 +2,7 @@ import { GoogleGenAI, Type, Schema } from "@google/genai";
 import { AnalysisResponse, ImageStyle } from "../types";
 
 const SYSTEM_INSTRUCTION = `
-Role: You are a Tier-1 Visual Director for Russian E-commerce (Ozon, Wildberries) with 10+ years of experience in Conversion Rate Optimization (CRO).
+Role: You are a Tier-1 Visual Director for Russian E-commerce (Ozon) with 10+ years of experience in Conversion Rate Optimization (CRO).
 
 Objective: Analyze product images + user context + visual style strategy to generate actionable, high-conversion visual assets. 
 Output a JSON with:
@@ -108,12 +108,12 @@ const responseSchema: Schema = {
         trending_tags: {
           type: Type.ARRAY,
           items: { type: Type.STRING },
-          description: "15-20 popular Russian OZON-specific hashtags for this product. EXCLUDE ANY Wildberries (WB) related tags. STRICTLY AVOID prohibited words as specified in the user context. Must be in Russian."
+          description: "15-20 popular Russian OZON-specific hashtags for this product. Ensure ANY trending tags reflect the year 2026 (e.g., #весна2026). STRICTLY AVOID ANY Wildberries (WB) tags or older years (e.g. 2024). Must be in Russian."
         },
         product_description: {
           type: Type.OBJECT,
           properties: {
-             ru: { type: Type.STRING, description: "A highly optimized Russian product description for Ozon/WB. Engage customers and use trending keywords." },
+             ru: { type: Type.STRING, description: "A highly optimized Russian product description strictly for Ozon. Do NOT mention WB. Engage customers and use trending keywords for 2026." },
              zh: { type: Type.STRING, description: "Chinese translation of the description." }
           },
           required: ["ru", "zh"]
@@ -202,14 +202,14 @@ export const analyzeProductImage = async (
   // Construct instruction based on style
   let styleInstruction = "";
   if (selectedStyle === 'auto') {
-    styleInstruction = "AUTO_DETECT: Analyze the product aesthetics and category. Select the SINGLE Best visual style for the Russian market (Ozon/WB) and apply it to all prompts. Explain the choice in 'recommended_visual_style'.";
+    styleInstruction = "AUTO_DETECT: Analyze the product aesthetics and category. Select the SINGLE Best visual style for the Russian market (Ozon) and apply it to all prompts. Explain the choice in 'recommended_visual_style'.";
   } else if (selectedStyle === 'custom') {
     styleInstruction = `CUSTOM USER STYLE: "${customStyleDesc || 'Use a style suitable for the product'}". Apply this specific user-defined visual style to all prompts.`;
   } else {
     styleInstruction = `SELECTED VISUAL STYLE: ${selectedStyle.toUpperCase()}. Apply this style strictly.`;
   }
 
-  let promptText = `Analyze these product images for the Russian market (Ozon/Wildberries). 
+  let promptText = `Analyze these product images strictly for the Russian market out on Ozon (do NOT target Wildberries). The current year is 2026, so ensure any time-sensitive details reflect 2026. 
   
   **STYLE STRATEGY**: ${styleInstruction}
   
@@ -219,7 +219,7 @@ export const analyzeProductImage = async (
   3. 2x Vertical (9:16) Prompts for Videos.
   
   **CRITICAL REQUIREMENT**: The prompts must be realistic and commercially viable for the Russian market. 
-  - Ensure Russian text instructions are grammatically correct and marketing-focused (using Ozon/WB keywords).
+  - Ensure Russian text instructions are grammatically correct and marketing-focused (using Ozon keywords exclusively).
   - Visuals should be high-quality, avoiding generic AI hallucinations.
   - If the product is seasonal (e.g., winter coat), ensure the background reflects the season (e.g., snow, winter street).
   
