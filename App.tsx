@@ -12,7 +12,7 @@ const App: React.FC = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [contextText, setContextText] = useState<string>("");
   const [apiKey, setApiKey] = useState(() => localStorage.getItem('ozon_api_key') || '');
-  const [apiModel, setApiModel] = useState(() => localStorage.getItem('ozon_api_model') || 'gemini-1.5-flash');
+  const [apiModel, setApiModel] = useState(() => localStorage.getItem('ozon_api_model') || 'gemini-3.1-pro-preview');
   const [isApiKeySaved, setIsApiKeySaved] = useState(!!localStorage.getItem('ozon_api_key'));
   const [selectedStyle, setSelectedStyle] = useState<ImageStyle>('auto');
   const [customStyleDesc, setCustomStyleDesc] = useState<string>("");
@@ -223,11 +223,11 @@ const App: React.FC = () => {
                           value={apiModel}
                           onChange={(e) => setApiModel(e.target.value)}
                        >
-                          <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
-                          <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
-                          <option value="gemini-pro">Gemini Pro (基础)</option>
-                          <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
-                          <option value="gemini-3-flash-preview">Gemini Flash Preview</option>
+                          <option value="gemini-3.1-pro-preview">Gemini 3.1 Pro Preview</option>
+                          <option value="gemini-3-flash-preview">Gemini 3 Flash Preview</option>
+                          <option value="gemini-pro-latest">Gemini Pro Latest</option>
+                          <option value="gemini-flash-latest">Gemini Flash Latest</option>
+                          <option value="gemini-3.1-flash-lite-preview">Gemini 3.1 Flash Lite</option>
                        </select>
                     </div>
                  </div>

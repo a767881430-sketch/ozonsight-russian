@@ -183,7 +183,7 @@ export const analyzeProductImage = async (
   userContext: string,
   selectedStyle: ImageStyle,
   customStyleDesc?: string,
-  modelId: string = "gemini-1.5-pro"
+  modelId: string = "gemini-3.1-pro-preview"
 ): Promise<AnalysisResponse> => {
   const storedApiKey = localStorage.getItem('ozonsight_gemini_api_key');
   const apiKey = storedApiKey || process.env.GEMINI_API_KEY || import.meta.env?.VITE_GEMINI_API_KEY;
