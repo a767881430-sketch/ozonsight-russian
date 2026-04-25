@@ -46,9 +46,7 @@ const App: React.FC = () => {
     localStorage.setItem('ozon_api_key', apiKey);
     localStorage.setItem('ozon_api_model', apiModel);
     setIsApiKeySaved(true);
-    // 简单特效反馈
     setTimeout(() => setIsApiKeySaved(false), 2000);
-    setTimeout(() => setIsApiKeySaved(!!apiKey), 2001);
   };
 
   const handleImagesSelect = (files: File[]) => {
@@ -236,9 +234,13 @@ const App: React.FC = () => {
                     <button 
                        onClick={handleSaveSettings}
                        disabled={!apiKey}
-                       className="px-4 py-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:text-emerald-700 font-bold text-xs rounded-md border border-emerald-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                       className={`px-4 py-1.5 font-bold text-xs rounded-md border transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
+                           isApiKeySaved 
+                             ? 'bg-emerald-50 text-emerald-600 border-emerald-200' 
+                             : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                       }`}
                     >
-                       {isApiKeySaved ? '已保存设置' : '保存设置'}
+                       {isApiKeySaved ? '✓ 保存成功' : '保存设置'}
                     </button>
                  </div>
                   <p className="text-[10px] text-slate-400 mt-2 leading-relaxed">
