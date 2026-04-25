@@ -9,8 +9,8 @@ Output a JSON with:
 1.  **Product Info**: Category, features, and the AI-RECOMMENDED VISUAL STYLE (in Chinese).
 2.  **Market USPs**: Localized selling points for Russia (in Russian & Chinese), focusing on practical benefits (warmth, durability, speed) valued by Russian consumers.
 3.  **Main Card Prompts (3:4, Total 6)**:
-    - 3 Prompts following the "Visual Engineering" template for **Studio/Flat-lay** (Clean background).
-    - 3 Prompts following the "Visual Engineering" template for **Lifestyle/In-Use Scenes** (Context-rich, environmental).
+    - 4 Prompts following the "Visual Engineering" template for **Studio/Details** (Clean background, macro photography, fabric textures, close-ups of features).
+    - 2 Prompts following the "Visual Engineering" template for **Lifestyle/In-Use Scenes** (Context-rich, environmental).
 4.  **Rich Content Prompts (16:9)**: 4 prompts following the "Brand Storytelling" template.
 5.  **Video Prompts (9:16)**: 2 prompts optimized for Ozon Moments/Shorts (video generation).
 

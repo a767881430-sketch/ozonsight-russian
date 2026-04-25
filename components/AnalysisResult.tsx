@@ -1,6 +1,6 @@
 import React from 'react';
 import { AnalysisResponse } from '../types';
-import { Copy, Check, Box, Layers, Monitor, Camera, LayoutTemplate, Info, Sparkles, TrendingUp, Tag, ShieldCheck, Zap } from 'lucide-react';
+import { Copy, Check, Box, Layers, Monitor, Camera, LayoutTemplate, Info, Sparkles, TrendingUp, Tag, ShieldCheck, Zap, Loader2, Wand2 } from 'lucide-react';
 
 interface AnalysisResultProps {
   data: AnalysisResponse;
@@ -261,11 +261,28 @@ interface CodeBlockProps {
 
 const CodeBlock: React.FC<CodeBlockProps> = ({title, purpose, code, index, highlight = false, compact = false}) => {
     const [copied, setCopied] = React.useState(false);
+    const [isGenerating, setIsGenerating] = React.useState(false);
+    const [imageUrl, setImageUrl] = React.useState<string | null>(null);
 
     const handleCopy = () => {
         navigator.clipboard.writeText(code);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
+    };
+
+    const handleGenerate = () => {
+        setIsGenerating(true);
+        setImageUrl(null);
+        
+        // Remove structural prompts prefix e.g. "1:Format:" -> "Format:"
+        const cleanPrompt = code.replace(/^\d+:/, '').trim();
+        const seed = Math.floor(Math.random() * 1000000);
+        
+        // Fetch horizontal or absolute vertical depending on prompt title/purpose but generally square/portrait works well
+        // We'll use 768x1024 for portrait to keep it high quality
+        const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(cleanPrompt)}?width=768&height=1024&nologo=true&seed=${seed}`;
+        
+        setImageUrl(url);
     };
 
     return (
@@ -289,18 +306,33 @@ const CodeBlock: React.FC<CodeBlockProps> = ({title, purpose, code, index, highl
                         <span className="text-[10px] text-slate-400 font-medium">{purpose}</span>
                     </div>
                 </div>
-                <button 
-                    onClick={handleCopy}
-                    className={`
-                        flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all active:scale-95
-                        ${copied 
-                            ? 'bg-green-100 text-green-700' 
-                            : 'bg-slate-900 text-white hover:bg-black shadow-lg shadow-slate-200'}
-                    `}
-                >
-                    {copied ? <Check size={14} /> : <Copy size={14} />}
-                    {copied ? '已复制' : '复制提示词'}
-                </button>
+                <div className="flex items-center gap-2">
+                    <button 
+                        onClick={handleGenerate}
+                        disabled={isGenerating}
+                        className={`
+                            flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all
+                            ${isGenerating 
+                                ? 'bg-indigo-100 text-indigo-400 cursor-wait' 
+                                : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100 border border-indigo-200'}
+                        `}
+                    >
+                        {isGenerating ? <Loader2 size={14} className="animate-spin" /> : <Wand2 size={14} />}
+                        {isGenerating ? '正在渲染...' : '生成概念图'}
+                    </button>
+                    <button 
+                        onClick={handleCopy}
+                        className={`
+                            flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all active:scale-95
+                            ${copied 
+                                ? 'bg-green-100 text-green-700' 
+                                : 'bg-slate-900 text-white hover:bg-black shadow-lg shadow-slate-200'}
+                        `}
+                    >
+                        {copied ? <Check size={14} /> : <Copy size={14} />}
+                        {copied ? '已复制' : '复制提示词'}
+                    </button>
+                </div>
             </div>
             
             {/* Code Content */}
@@ -323,6 +355,28 @@ const CodeBlock: React.FC<CodeBlockProps> = ({title, purpose, code, index, highl
                         <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tighter">3:4 Vertical</span>
                     </div>
                 </div>
+
+                {/* Generated Image Preview */}
+                {(isGenerating || imageUrl) && (
+                    <div className="mt-6 pt-6 border-t border-slate-100 relative min-h-[200px] flex justify-center bg-slate-50/50 rounded-xl overflow-hidden">
+                        {isGenerating && (
+                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/60 backdrop-blur-sm z-10">
+                                <Loader2 className="animate-spin text-indigo-500 mb-3" size={32} />
+                                <span className="text-sm text-indigo-900 font-bold tracking-tight">AI 视觉引擎正在渲染...</span>
+                                <span className="text-[10px] text-slate-500 mt-1 uppercase tracking-wider">Estimated time: 5-8s</span>
+                            </div>
+                        )}
+                        {imageUrl && (
+                            <img 
+                                src={imageUrl} 
+                                alt="AI Generated Concept" 
+                                className="w-full h-auto max-h-[500px] object-contain rounded-lg shadow-md border border-slate-200"
+                                onLoad={() => setIsGenerating(false)}
+                                onError={() => setIsGenerating(false)} // Stop loading state if it fails
+                            />
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     );
