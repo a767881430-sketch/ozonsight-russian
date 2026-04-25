@@ -6,13 +6,14 @@ import StyleSelector from './components/StyleSelector';
 import AnalysisResult from './components/AnalysisResult';
 import { analyzeProductImage, fileToBase64 } from './services/geminiService';
 import { AnalysisResponse, AppState, ImageStyle } from './types';
-import { AlertCircle, Sparkles, ArrowRight, Loader2, Zap, Globe, Command, Key } from 'lucide-react';
+import { AlertCircle, Sparkles, ArrowRight, Loader2, Zap, Globe, Command, Key, Layers } from 'lucide-react';
 
 const App: React.FC = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [contextText, setContextText] = useState<string>("");
-  const [apiKeyInput, setApiKeyInput] = useState<string>('');
-  const [isApiKeySaved, setIsApiKeySaved] = useState<boolean>(false);
+  const [apiKey, setApiKey] = useState(() => localStorage.getItem('ozon_api_key') || '');
+  const [apiModel, setApiModel] = useState(() => localStorage.getItem('ozon_api_model') || 'gemini-1.5-flash');
+  const [isApiKeySaved, setIsApiKeySaved] = useState(!!localStorage.getItem('ozon_api_key'));
   const [selectedStyle, setSelectedStyle] = useState<ImageStyle>('auto');
   const [customStyleDesc, setCustomStyleDesc] = useState<string>("");
   const [appState, setAppState] = useState<AppState>(AppState.IDLE);
@@ -24,12 +25,6 @@ const App: React.FC = () => {
 
   // Restore state on mount
   React.useEffect(() => {
-    const savedKey = localStorage.getItem('ozonsight_gemini_api_key');
-    if (savedKey) {
-        setApiKeyInput(savedKey);
-        setIsApiKeySaved(true);
-    }
-
     const savedData = sessionStorage.getItem('ozonsight_last_result');
     const savedPreviews = sessionStorage.getItem('ozonsight_last_previews');
     
@@ -46,6 +41,15 @@ const App: React.FC = () => {
       }
     }
   }, []);
+
+  const handleSaveSettings = () => {
+    localStorage.setItem('ozon_api_key', apiKey);
+    localStorage.setItem('ozon_api_model', apiModel);
+    setIsApiKeySaved(true);
+    // 简单特效反馈
+    setTimeout(() => setIsApiKeySaved(false), 2000);
+    setTimeout(() => setIsApiKeySaved(!!apiKey), 2001);
+  };
 
   const handleImagesSelect = (files: File[]) => {
     setSelectedFiles(files);
@@ -66,16 +70,6 @@ const App: React.FC = () => {
     setErrorMsg(null);
     sessionStorage.removeItem('ozonsight_last_result');
     sessionStorage.removeItem('ozonsight_last_previews');
-  };
-
-  const handleSaveApiKey = () => {
-      if (apiKeyInput.trim()) {
-          localStorage.setItem('ozonsight_gemini_api_key', apiKeyInput.trim());
-          setIsApiKeySaved(true);
-      } else {
-          localStorage.removeItem('ozonsight_gemini_api_key');
-          setIsApiKeySaved(false);
-      }
   };
 
   const startAnalysis = async () => {
@@ -132,7 +126,8 @@ const App: React.FC = () => {
         mimeTypes, 
         contextText, 
         selectedStyle, 
-        customStyleDesc
+        customStyleDesc,
+        apiModel
       );
       
       // Save result to persist through reloads/refreshes
@@ -209,22 +204,43 @@ const App: React.FC = () => {
                      <input
                         type="password"
                         placeholder="AIzaSy..."
-                        value={apiKeyInput}
-                        onChange={(e) => {
-                            setApiKeyInput(e.target.value);
-                            setIsApiKeySaved(false);
-                        }}
+                        value={apiKey}
+                        onChange={(e) => setApiKey(e.target.value)}
                         disabled={appState === AppState.ANALYZING}
                         className="flex-1 w-full text-sm placeholder:text-slate-300 border border-slate-200 rounded-md px-3 py-2 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-mono"
                      />
-                     <button
-                        onClick={handleSaveApiKey}
-                        disabled={appState === AppState.ANALYZING || (!apiKeyInput && !isApiKeySaved)}
-                        className={`px-3 py-2 text-xs font-semibold rounded-md transition-all whitespace-nowrap ${isApiKeySaved ? 'bg-emerald-50 text-emerald-600 border border-emerald-200' : 'bg-slate-900 text-white hover:bg-slate-800'}`}
-                     >
-                        {isApiKeySaved ? '已保存' : '保存'}
-                     </button>
                   </div>
+                  
+                  <div className="relative pl-4 mt-6">
+                    <div className="absolute left-[-22px] top-2 w-3 h-3 rounded-full bg-white border-2 border-slate-200 shadow-sm"></div>
+                    <div className="flex items-center justify-between gap-4">
+                       <div className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                          <Layers size={14} className="text-slate-400" />
+                          AI 模型版本
+                       </div>
+                       <select 
+                          className="text-xs px-2 py-1.5 border border-slate-200 rounded-md bg-slate-50 text-slate-700 focus:outline-none focus:border-indigo-400 shadow-inner w-36"
+                          value={apiModel}
+                          onChange={(e) => setApiModel(e.target.value)}
+                       >
+                          <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
+                          <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
+                          <option value="gemini-pro">Gemini Pro (基础)</option>
+                          <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+                          <option value="gemini-3-flash-preview">Gemini Flash Preview</option>
+                       </select>
+                    </div>
+                 </div>
+                 
+                 <div className="pl-4 mt-4 text-right">
+                    <button 
+                       onClick={handleSaveSettings}
+                       disabled={!apiKey}
+                       className="px-4 py-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:text-emerald-700 font-bold text-xs rounded-md border border-emerald-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                       {isApiKeySaved ? '已保存设置' : '保存设置'}
+                    </button>
+                 </div>
                   <p className="text-[10px] text-slate-400 mt-2 leading-relaxed">
                      Key 仅保存在您的浏览器本地，不会上传到任何服务器。
                   </p>
@@ -280,7 +296,7 @@ const App: React.FC = () => {
            </div>
            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white border border-slate-200/60 shadow-sm text-[10px] font-medium text-slate-500 pointer-events-auto tracking-tight">
               <Zap size={12} className="text-amber-500 fill-amber-500" />
-              <span>Gemini 1.5 Pro (Expert)</span>
+              <span>{apiModel}</span>
            </div>
         </div>
 

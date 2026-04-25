@@ -182,7 +182,8 @@ export const analyzeProductImage = async (
   mimeTypes: string[], 
   userContext: string,
   selectedStyle: ImageStyle,
-  customStyleDesc?: string
+  customStyleDesc?: string,
+  modelId: string = "gemini-1.5-pro"
 ): Promise<AnalysisResponse> => {
   const storedApiKey = localStorage.getItem('ozonsight_gemini_api_key');
   const apiKey = storedApiKey || process.env.GEMINI_API_KEY || import.meta.env?.VITE_GEMINI_API_KEY;
@@ -232,7 +233,7 @@ export const analyzeProductImage = async (
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-pro",
+      model: modelId,
       contents: {
         parts: [
           ...imageParts,
