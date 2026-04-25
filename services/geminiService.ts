@@ -8,11 +8,11 @@ Objective: Analyze product images + user context + visual style strategy to gene
 Output a JSON with:
 1.  **Product Info**: Category, features, and the AI-RECOMMENDED VISUAL STYLE (in Chinese).
 2.  **Market USPs**: Localized selling points for Russia (in Russian & Chinese), focusing on practical benefits (warmth, durability, speed) valued by Russian consumers.
-3.  **Main Card Prompts (3:4, Total 10)**:
-    - 5 Prompts following the "Visual Engineering" template for **Studio/Flat-lay** (Clean background).
-    - 5 Prompts following the "Visual Engineering" template for **Lifestyle/In-Use Scenes** (Context-rich, environmental).
-4.  **Rich Content Prompts (16:9)**: 10 prompts following the "Brand Storytelling" template.
-5.  **Video Prompts (9:16)**: 3 prompts optimized for Ozon Moments/Shorts (video generation).
+3.  **Main Card Prompts (3:4, Total 6)**:
+    - 3 Prompts following the "Visual Engineering" template for **Studio/Flat-lay** (Clean background).
+    - 3 Prompts following the "Visual Engineering" template for **Lifestyle/In-Use Scenes** (Context-rich, environmental).
+4.  **Rich Content Prompts (16:9)**: 4 prompts following the "Brand Storytelling" template.
+5.  **Video Prompts (9:16)**: 2 prompts optimized for Ozon Moments/Shorts (video generation).
 
 ---
 ### CRITICAL DESIGN CONSTRAINTS (MANDATORY)
@@ -123,7 +123,7 @@ const responseSchema: Schema = {
     },
     gemini_image_prompts: {
       type: Type.ARRAY,
-      description: "Generate exactly 5 detailed prompts for the Main Product Card (Vertical 3:4) in STUDIO/FLAT-LAY background.",
+      description: "Generate exactly 3 detailed prompts for the Main Product Card (Vertical 3:4) in STUDIO/FLAT-LAY background.",
       items: {
         type: Type.OBJECT,
         properties: {
@@ -136,7 +136,7 @@ const responseSchema: Schema = {
     },
     gemini_lifestyle_prompts: {
       type: Type.ARRAY,
-      description: "Generate exactly 5 detailed prompts for the Main Product Card (Vertical 3:4) in SCENE-BASED/LIFESTYLE background.",
+      description: "Generate exactly 3 detailed prompts for the Main Product Card (Vertical 3:4) in SCENE-BASED/LIFESTYLE background.",
       items: {
         type: Type.OBJECT,
         properties: {
@@ -149,7 +149,7 @@ const responseSchema: Schema = {
     },
     gemini_rich_content_prompts: {
       type: Type.ARRAY,
-      description: "Generate exactly 10 detailed prompts for Ozon Rich Content/A+ Banners (Landscape).",
+      description: "Generate exactly 4 detailed prompts for Ozon Rich Content/A+ Banners (Landscape).",
       items: {
         type: Type.OBJECT,
         properties: {
@@ -162,7 +162,7 @@ const responseSchema: Schema = {
     },
     gemini_video_prompts: {
       type: Type.ARRAY,
-      description: "Generate exactly 3 video generation prompts (Vertical 9:16).",
+      description: "Generate exactly 2 video generation prompts (Vertical 9:16).",
       items: {
         type: Type.OBJECT,
         properties: {
@@ -214,9 +214,9 @@ export const analyzeProductImage = async (
   **STYLE STRATEGY**: ${styleInstruction}
   
   Provide a comprehensive strategy JSON with:
-  1. 10x Vertical (3:4) Prompts for Images.
-  2. 10x Horizontal (16:9) Prompts for Rich Content.
-  3. 3x Vertical (9:16) Prompts for Videos.
+  1. 6x Vertical (3:4) Prompts for Images (3 Studio, 3 Lifestyle).
+  2. 4x Horizontal (16:9) Prompts for Rich Content.
+  3. 2x Vertical (9:16) Prompts for Videos.
   
   **CRITICAL REQUIREMENT**: The prompts must be realistic and commercially viable for the Russian market. 
   - Ensure Russian text instructions are grammatically correct and marketing-focused (using Ozon/WB keywords).
