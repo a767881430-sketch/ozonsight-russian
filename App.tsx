@@ -280,7 +280,7 @@ const App: React.FC = () => {
            </div>
            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white border border-slate-200/60 shadow-sm text-[10px] font-medium text-slate-500 pointer-events-auto tracking-tight">
               <Zap size={12} className="text-amber-500 fill-amber-500" />
-              <span>Gemini 3.1 Pro (Expert)</span>
+              <span>Gemini 1.5 Pro (Expert)</span>
            </div>
         </div>
 

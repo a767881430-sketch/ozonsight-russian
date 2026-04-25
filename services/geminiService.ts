@@ -232,7 +232,7 @@ export const analyzeProductImage = async (
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-3.1-pro",
+      model: "gemini-1.5-pro",
       contents: {
         parts: [
           ...imageParts,
