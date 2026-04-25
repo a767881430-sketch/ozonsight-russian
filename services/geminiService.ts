@@ -123,7 +123,7 @@ const responseSchema: Schema = {
     },
     gemini_image_prompts: {
       type: Type.ARRAY,
-      description: "Generate exactly 3 detailed prompts for the Main Product Card (Vertical 3:4) in STUDIO/FLAT-LAY background.",
+      description: "Generate exactly 4 detailed prompts for the Main Product Card (Vertical 3:4) focusing on STUDIO/DETAILS (close-ups, fabric, features).",
       items: {
         type: Type.OBJECT,
         properties: {
@@ -136,7 +136,7 @@ const responseSchema: Schema = {
     },
     gemini_lifestyle_prompts: {
       type: Type.ARRAY,
-      description: "Generate exactly 3 detailed prompts for the Main Product Card (Vertical 3:4) in SCENE-BASED/LIFESTYLE background.",
+      description: "Generate exactly 2 detailed prompts for the Main Product Card (Vertical 3:4) in SCENE-BASED/LIFESTYLE background.",
       items: {
         type: Type.OBJECT,
         properties: {
@@ -214,7 +214,7 @@ export const analyzeProductImage = async (
   **STYLE STRATEGY**: ${styleInstruction}
   
   Provide a comprehensive strategy JSON with:
-  1. 6x Vertical (3:4) Prompts for Images (3 Studio, 3 Lifestyle).
+  1. 6x Vertical (3:4) Prompts for Images (4 Studio/Details, 2 Lifestyle).
   2. 4x Horizontal (16:9) Prompts for Rich Content.
   3. 2x Vertical (9:16) Prompts for Videos.
   
