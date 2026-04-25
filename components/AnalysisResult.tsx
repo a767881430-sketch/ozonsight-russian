@@ -274,13 +274,19 @@ const CodeBlock: React.FC<CodeBlockProps> = ({title, purpose, code, index, highl
         setIsGenerating(true);
         setImageUrl(null);
         
-        // Remove structural prompts prefix e.g. "1:Format:" -> "Format:"
-        const cleanPrompt = code.replace(/^\d+:/, '').trim();
+        // 1. Remove structural prompts prefix e.g. "1:Format:" -> "Format:"
+        let photoPrompt = code.replace(/^\d+:/, '').trim();
+        
+        // 2. Strip out the Infographic Layout metadata so the AI doesn't try to draw text (which ruins realism)
+        photoPrompt = photoPrompt.replace(/Russian Infographic Layout:.*?Style:/g, 'Style:');
+        
+        // 3. Force maximum texture and photorealism
+        photoPrompt += ", hyper-realistic commercial photography, extremely detailed fabric texture, tactile materials, 8k resolution, shot on Sony a7R IV, professional lighting, masterpiece";
+
         const seed = Math.floor(Math.random() * 1000000);
         
-        // Fetch horizontal or absolute vertical depending on prompt title/purpose but generally square/portrait works well
-        // We'll use 768x1024 for portrait to keep it high quality
-        const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(cleanPrompt)}?width=768&height=1024&nologo=true&seed=${seed}`;
+        // Using flux model explicitly with enhancement enabled for high-end results
+        const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(photoPrompt)}?width=768&height=1024&nologo=true&seed=${seed}&model=flux&enhance=true`;
         
         setImageUrl(url);
     };
