@@ -24,3 +24,8 @@
 
 ## 拥堵规避与接口升级 (2026-04-25)
 - [x] 由于 Google AI `gemini-3-flash-preview` 免费通道频繁触发 HTTP 503 高并发超时报错，现已在底层架构中将运算挂载点全局切换至 `gemini-1.5-pro`。彻底避开 Flash 请求洪峰，提供稳定高质的生成体验。
+
+## API 安全配置与多环境适配 (2026-05-02)
+- [x] 重构前端 API Key 存储逻辑，修正多设备下的 `localStorage` 键值不匹配导致 Key 丢失报错的 Bug。
+- [x] 新增用户自定义 AI 模型版本下拉框（支持 `Pro` / `Flash` / `Lite` 等全系内测版本），完美匹配用户特定的 Google AI Studio 内测通道及配额（Quota）权限限制。
+- [x] 新增 API 密钥“静默防呆机制”，自动过滤头尾回车与隐藏空格，解决前端用户因复制产生 `400 INVALID_ARGUMENT` 的高频痛点。
