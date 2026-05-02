@@ -43,7 +43,9 @@ const App: React.FC = () => {
   }, []);
 
   const handleSaveSettings = () => {
-    localStorage.setItem('ozon_api_key', apiKey);
+    const trimmedKey = apiKey.trim();
+    setApiKey(trimmedKey);
+    localStorage.setItem('ozon_api_key', trimmedKey);
     localStorage.setItem('ozon_api_model', apiModel);
     setIsApiKeySaved(true);
     setTimeout(() => setIsApiKeySaved(false), 2000);
