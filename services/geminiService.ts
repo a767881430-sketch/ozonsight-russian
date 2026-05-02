@@ -185,7 +185,7 @@ export const analyzeProductImage = async (
   customStyleDesc?: string,
   modelId: string = "gemini-3.1-pro-preview"
 ): Promise<AnalysisResponse> => {
-  const storedApiKey = localStorage.getItem('ozonsight_gemini_api_key');
+  const storedApiKey = localStorage.getItem('ozon_api_key');
   const apiKey = storedApiKey || process.env.GEMINI_API_KEY || import.meta.env?.VITE_GEMINI_API_KEY;
   if (!apiKey) {
     throw new Error("请先在左侧输入并保存您的 Gemini API Key。 (API Key is missing)");
